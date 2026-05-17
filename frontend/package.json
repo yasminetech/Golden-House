@@ -2,7 +2,7 @@
   "name": "golden-house-frontend",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://yasminetech.github.io/Golden-House/",
+  "homepage": ".",
   "proxy": "http://localhost:5500",
 
   "dependencies": {
