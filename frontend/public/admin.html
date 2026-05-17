@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Meriams Shop ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fdfaf6;
+            --surface: #ffffff;
+            --text: #3d3445;
+            --muted: #8e8494;
+            --primary: #e69d8b;
+            --primary-hover: #d18a75;
+            --secondary: #9d94ff;
+            --border: #ece1ed;
+            --radius-lg: 28px;
+            --radius-md: 18px;
+            --shadow: 0 12px 30px rgba(230, 157, 139, 0.12);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: min(1200px, calc(100% - 4rem));
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .admin-nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        h2 { margin-top: 0; margin-bottom: 1.5rem; }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .product-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .product-info { flex: 1; }
+        .product-info strong { display: block; }
+        .product-info span { font-size: 0.9rem; color: var(--muted); }
+
+        .btn-danger {
+            background: #ff8b8b;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .hidden { display: none !important; }
+
+        .message-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-overlay" class="hidden">
+        <div class="card" style="width: 400px; text-align: center;">
+            <h2>Accès Réservé 🔒</h2>
+            <p>Veuillez vous connecter avec un compte admin.</p>
+            <a href="/" class="btn-primary" style="display: inline-block; text-decoration: none;">Retour à la boutique</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <a href="/" class="brand">Golden House Admin ✨</a>
+            <div class="admin-nav">
+                <button class="nav-btn active" onclick="showTab('products', event)">Produits</button>
+                <button class="nav-btn" onclick="showTab('messages', event)">Messages</button>
+                <button class="nav-btn" onclick="logout()">Déconnexion</button>
+            </div>
+        </header>
+
+        <main id="tab-products" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>Nouveau Produit 🪄</h2>
+                    <form id="product-form">
+                        <input type="text" id="p-name" placeholder="Nom du produit" required>
+                        <textarea id="p-desc" placeholder="Description" rows="4" required></textarea>
+                        <input type="number" id="p-price" placeholder="Prix (€)" step="0.01" required>
+                        <input type="text" id="p-image" placeholder="URL de l'image" required>
+                        <input type="text" id="p-category" placeholder="Catégorie" required>
+                        <input type="number" id="p-stock" placeholder="Stock" required>
+                        <button type="submit" class="btn-primary">Ajouter au catalogue</button>
+                    </form>
+                </div>
+                <div class="card">
+                    <h2>Catalogue</h2>
+                    <div id="product-list" class="product-list">
+                        <!-- Products will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main id="tab-messages" class="tab-content hidden">
+            <div class="card">
+                <h2>Messages Clients 📩</h2>
+                <div id="messages-list">
+                    <!-- Messages will be injected here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5500/api';
+        let user = JSON.parse(localStorage.getItem('user') || 'null');
+        let token = localStorage.getItem('token');
+
+        function checkAuth() {
+            if (!token || !user || user.role !== 'admin') {
+                document.getElementById('login-overlay').classList.remove('hidden');
+            }
+        }
+
+        async function apiCall(endpoint, options = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                ...options.headers,
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            };
+            const response = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+            return response.json();
+        }
+
+        async function fetchProducts() {
+            const products = await apiCall('/products');
+            const list = document.getElementById('product-list');
+            list.innerHTML = products.map(p => `
+                <div class="product-item">
+                    <img src="${p.image_url}" alt="${p.name}">
+                    <div class="product-info">
+                        <strong>${p.name}</strong>
+                        <span>${p.price} € - Stock: ${p.stock}</span>
+                    </div>
+                    <button class="btn-danger" onclick="deleteProduct(${p.id})">Supprimer</button>
+                </div>
+            `).join('');
+        }
+
+        async function fetchMessages() {
+            const messages = await apiCall('/contact');
+            const list = document.getElementById('messages-list');
+            if (messages.length === 0) {
+                list.innerHTML = '<p>Aucun message reçu.</p>';
+                return;
+            }
+            list.innerHTML = messages.map(m => `
+                <div class="message-card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                        <strong>${m.name} (${m.email})</strong>
+                        <small>${new Date(m.created_at).toLocaleDateString()}</small>
+                    </div>
+                    <p style="margin:0;">${m.message}</p>
+                </div>
+            `).join('');
+        }
+
+        async function deleteProduct(id) {
+            if (confirm('Supprimer ce produit ?')) {
+                await apiCall(`/products/${id}`, { method: 'DELETE' });
+                fetchProducts();
+            }
+        }
+
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const product = {
+                name: document.getElementById('p-name').value,
+                description: document.getElementById('p-desc').value,
+                price: parseFloat(document.getElementById('p-price').value),
+                image_url: document.getElementById('p-image').value,
+                category: document.getElementById('p-category').value,
+                stock: parseInt(document.getElementById('p-stock').value)
+            };
+
+            const res = await apiCall('/products', {
+                method: 'POST',
+                body: JSON.stringify(product)
+            });
+
+            if (res.id || res.message) {
+                alert('Produit ajouté !');
+                e.target.reset();
+                fetchProducts();
+            } else {
+                alert('Erreur: ' + (res.error || 'Inconnue'));
+            }
+        });
+
+        function showTab(tab, event) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            event?.target?.classList.add('active');            if (tab === 'products') fetchProducts();
+            if (tab === 'messages') fetchMessages();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+
+        checkAuth();
+        fetchProducts();
+    </script>
+</body>
+</html>
