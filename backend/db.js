@@ -4,10 +4,16 @@ require('dotenv').config();
 // Create a function to get config safely
 const getDbConfig = () => {
     if (process.env.DATABASE_URL) {
+        let databaseUrl;
         try {
-            new URL(process.env.DATABASE_URL);
+            databaseUrl = new URL(process.env.DATABASE_URL);
         } catch (err) {
             console.warn('Ignoring invalid DATABASE_URL. Falling back to DB_* variables.');
+            return getDbConfigFromVariables();
+        }
+
+        if (!['mysql:', 'mysql2:'].includes(databaseUrl.protocol)) {
+            console.warn('Ignoring non-MySQL DATABASE_URL. Falling back to DB_* variables.');
             return getDbConfigFromVariables();
         }
 
