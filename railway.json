@@ -5,7 +5,7 @@
     "buildCommand": "cd frontend && npm ci && PUBLIC_URL=. npm run build && cd ../backend && npm ci"
   },
   "deploy": {
-    "startCommand": "cd backend && npm start",
+    "startCommand": "cd backend && PORT=5500 npm start",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
