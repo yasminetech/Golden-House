@@ -1,7 +1,10 @@
-export const apiBase = process.env.REACT_APP_API_URL || 'https://golden-house-production.up.railway.app/';
+export const apiBase =
+  process.env.REACT_APP_API_URL ||
+  'https://golden-house-production.up.railway.app/api';
 
 export const apiCall = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
+
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -13,7 +16,6 @@ export const apiCall = async (endpoint, options = {}) => {
     headers
   });
 
-  // Try to parse JSON body, but provide graceful fallback
   const parseBody = async () => {
     try {
       return await response.json();
@@ -23,9 +25,13 @@ export const apiCall = async (endpoint, options = {}) => {
   };
 
   const body = await parseBody();
+
   if (!response.ok) {
-    // Throw parsed error object to be handled by callers
-    const err = body && (body.error || body.message) ? body : { error: body };
+    const err =
+      body && (body.error || body.message)
+        ? body
+        : { error: body };
+
     throw err;
   }
 
