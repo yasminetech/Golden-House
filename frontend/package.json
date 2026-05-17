@@ -1,5 +1,5 @@
 {
-  "name": "meriams-shop-frontend",
+  "name": "golden-house-frontend",
   "version": "1.0.0",
   "private": true,
   "proxy": "http://localhost:5500",

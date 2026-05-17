@@ -1,7 +1,7 @@
 {
-  "name": "meriams-shop-root",
+  "name": "golden-house-root",
   "version": "1.0.0",
-  "description": "Root package for Meriams Shop",
+  "description": "Root package for Golden House",
   "scripts": {
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
     "backend": "cd backend && npm start",

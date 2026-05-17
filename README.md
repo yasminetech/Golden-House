@@ -1,4 +1,4 @@
-# Meriams Shop
+# Golden House
 
 Boutique en ligne complète avec backend Express et frontend React.
 
@@ -53,7 +53,7 @@ Admin dashboard : `http://localhost:3004/admin.html` (ou via le bouton Admin de 
 
 
 ```
-meriamsApp/
+Golden House/
 ├── backend/              # API Express
 │   ├── routes/          # Routes API (auth, products, orders, contact)
 │   ├── middleware/      # Auth middleware
