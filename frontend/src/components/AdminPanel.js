@@ -7,7 +7,7 @@ export default function AdminPanel({ userToken, onProductAdded }) {
   const [products, setProducts] = useState([]);
   const [messages, setMessages] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  
   const [newProduct, setNewProduct] = useState({
     name: '', description: '', price: '', image_url: '', category: '', stock: ''
   });
@@ -55,15 +55,7 @@ export default function AdminPanel({ userToken, onProductAdded }) {
     } catch (error) { console.error(error); }
   };
 
-  const handleUpdateOrderStatus = async (orderId, newStatus) => {
-    try {
-      // Assuming there is a route to update order status, if not we should add one
-      // For now, let's just log it or add the route later if needed
-      console.log(`Updating order ${orderId} to ${newStatus}`);
-      // await apiCall(`/orders/${orderId}`, { method: 'PUT', body: JSON.stringify({ status: newStatus }) });
-      // fetchOrders();
-    } catch (error) { console.error(error); }
-  };
+
 
   const handleAddProduct = async (e) => {
     e.preventDefault();

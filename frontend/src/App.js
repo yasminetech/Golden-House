@@ -11,50 +11,6 @@ const ContactForm = lazy(() => import('./components/ContactForm'));
 const OrdersList = lazy(() => import('./components/OrdersList'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: 'Rose Quartz Vase',
-    description: 'Vase en verre rosé et lignes douces, idéal pour créer une ambiance romantique et élégante.',
-    price: 79.00,
-    image_url: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1200',
-  },
-  {
-    id: 2,
-    name: 'Linen Throw Pillow',
-    description: 'Coussin en lin beige avec texture délicate, pour apporter confort et style à votre salon.',
-    price: 45.00,
-    image_url: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200',
-  },
-  {
-    id: 3,
-    name: 'Soft Gold Candle Holder',
-    description: 'Bougeoir doré doux pour une lumière chaleureuse et un intérieur raffiné.',
-    price: 36.00,
-    image_url: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200',
-  },
-  {
-    id: 4,
-    name: 'Velvet Accent Chair',
-    description: 'Fauteuil velours rose poudré avec pieds dorés, parfait pour une touche chic et cosy.',
-    price: 248.00,
-    image_url: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=1200',
-  },
-  {
-    id: 5,
-    name: 'Woven Wall Basket',
-    description: 'Panier mural en rotin tressé pour une décoration organique et légère.',
-    price: 39.00,
-    image_url: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200',
-  },
-  {
-    id: 6,
-    name: 'Scented Ceramic Candle',
-    description: 'Bougie parfumée artisanale dans un pot céramique, douceur florale et élégante.',
-    price: 28.00,
-    image_url: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=1200',
-  }
-];
 
 function App() {
   const [products, setProducts] = useState([]);

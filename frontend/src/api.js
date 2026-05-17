@@ -1,4 +1,4 @@
-export const apiBase = process.env.REACT_APP_API_URL || 'http://localhost:5500/api';
+export const apiBase = process.env.REACT_APP_API_URL || 'https://golden-house-production.up.railway.app/';
 
 export const apiCall = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
