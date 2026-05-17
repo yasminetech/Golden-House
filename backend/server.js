@@ -20,7 +20,7 @@ const contactRoutes = require('./routes/contact');
 const paymentRoutes = require('./routes/payment');
 
 const app = express();
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.APP_PORT || process.env.PORT || 5500;
 const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'build');
 const frontendIndexPath = path.join(frontendBuildPath, 'index.html');
 
