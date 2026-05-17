@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 // Diagnostic: log presence of DB env vars (do not print secrets)
 console.log('DB env:', {
@@ -19,10 +21,15 @@ const paymentRoutes = require('./routes/payment');
 
 const app = express();
 const PORT = process.env.PORT || 5500;
+const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'build');
+const frontendIndexPath = path.join(frontendBuildPath, 'index.html');
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
+if (fs.existsSync(frontendBuildPath)) {
+    app.use(express.static(frontendBuildPath));
+}
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -40,7 +47,10 @@ app.use('/api', (req, res) => {
     res.status(404).json({ message: 'API Route not found' });
 });
 
-app.get('/', (req, res) => {
+app.get(/^(?!\/api).*/, (req, res) => {
+    if (fs.existsSync(frontendIndexPath)) {
+        return res.sendFile(frontendIndexPath);
+    }
     res.send('Golden House API is running...');
 });
 
