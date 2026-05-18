@@ -2,6 +2,13 @@ export const apiBase =
   process.env.REACT_APP_API_URL ||
   'https://golden-house-production.up.railway.app/api';
 
+export const getFullImageUrl = (url) => {
+  if (!url) return 'https://via.placeholder.com/150';
+  if (url.startsWith('http')) return url;
+  const backendUrl = apiBase.replace('/api', '');
+  return `${backendUrl}${url}`;
+};
+
 export const apiCall = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
 

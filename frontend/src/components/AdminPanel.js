@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { apiCall } from '../api';
+import { apiCall, apiBase, getFullImageUrl } from '../api';
 
 export default function AdminPanel({ onProductAdded }) {
   const [activeTab, setActiveTab] = useState('products');
@@ -15,6 +15,38 @@ export default function AdminPanel({ onProductAdded }) {
     category: '',
     stock: ''
   });
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    setUploading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiBase}/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) throw new Error('Upload failed');
+      
+      const data = await response.json();
+      setNewProduct({ ...newProduct, image_url: data.imageUrl });
+      alert('Image téléchargée ! ✅');
+    } catch (error) {
+      console.error(error);
+      alert('Erreur lors du téléchargement');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   useEffect(() => {
     fetchProducts();
@@ -124,8 +156,25 @@ export default function AdminPanel({ onProductAdded }) {
               <input type="number" placeholder="Prix (€)" value={newProduct.price}
                 onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} required />
 
-              <input placeholder="Image URL" value={newProduct.image_url}
-                onChange={e => setNewProduct({ ...newProduct, image_url: e.target.value })} required />
+              <div className="file-upload-group" style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  Image du produit (URL ou Fichier)
+                </label>
+                <input placeholder="Image URL" value={newProduct.image_url}
+                  onChange={e => setNewProduct({ ...newProduct, image_url: e.target.value })} />
+                
+                <div style={{ margin: '0.5rem 0', textAlign: 'center', color: '#666' }}>— OU —</div>
+                
+                <input type="file" accept="image/*" onChange={handleFileUpload} disabled={uploading} />
+                {uploading && <p style={{ fontSize: '0.8rem', color: 'var(--primary)' }}>Téléchargement en cours...</p>}
+                
+                {newProduct.image_url && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <img src={getFullImageUrl(newProduct.image_url)} alt="Preview" 
+                      style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
+                  </div>
+                )}
+              </div>
 
               <input placeholder="Catégorie" value={newProduct.category}
                 onChange={e => setNewProduct({ ...newProduct, category: e.target.value })} required />
@@ -133,7 +182,9 @@ export default function AdminPanel({ onProductAdded }) {
               <input type="number" placeholder="Stock" value={newProduct.stock}
                 onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} required />
 
-              <button type="submit" className="btn-primary">Ajouter 🪄</button>
+              <button type="submit" className="btn-primary" disabled={uploading}>
+                {uploading ? 'Attendez...' : 'Ajouter 🪄'}
+              </button>
             </form>
           </div>
 
@@ -142,7 +193,7 @@ export default function AdminPanel({ onProductAdded }) {
             <div className="admin-product-list">
               {products.map(p => (
                 <div key={p.id} className="admin-product-item">
-                  <img src={p.image_url} alt="" />
+                  <img src={getFullImageUrl(p.image_url)} alt="" />
                   <div className="item-info">
                     <strong>{p.name}</strong>
                     <span>{p.price} € - Stock: {p.stock}</span>

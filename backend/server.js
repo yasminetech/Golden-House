@@ -18,8 +18,16 @@ const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const contactRoutes = require('./routes/contact');
 const paymentRoutes = require('./routes/payment');
+const uploadRoutes = require('./routes/upload');
 
 const app = express();
+
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, 'public', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const PORT = process.env.APP_PORT || process.env.PORT || 5500;
 const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'build');
 const frontendIndexPath = path.join(frontendBuildPath, 'index.html');
@@ -36,6 +44,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/payment', paymentRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Health check for Railway/Vercel
 app.get('/health', (req, res) => {
