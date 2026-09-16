@@ -103,4 +103,11 @@ const startServer = async () => {
     });
 };
 
-startServer();
+if (require.main === module) {
+    startServer();
+} else {
+    ensurePaymentMethodColumn();
+}
+
+module.exports = app;
+
