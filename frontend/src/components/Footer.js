@@ -1,42 +1,48 @@
 import React from 'react';
+import { LogoIcon } from './Icons';
 
 export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="container footer-content">
         <div className="footer-brand">
-          <a className="brand" href="#/">Golden House ✨</a>
-          <p>Votre boutique toute douce pour des trouvailles uniques et élégantes.</p>
+          <a className="brand" href="#/" title="Golden House" style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <LogoIcon size={54} />
+          </a>
+          <p>
+            Maison d'édition et galerie en ligne d'objets de décoration d'intérieur, mobilier d'artisanat et luminaires d'exception.
+          </p>
         </div>
         <div className="footer-links">
           <div>
-            <h4>Boutique</h4>
+            <h4>Collections</h4>
             <ul>
-              <li><a href="#/">Produits</a></li>
-              <li><a href="#/">Nouveautés</a></li>
-              <li><a href="#/">Promotions</a></li>
+              <li><a href="#/">Mobilier d'Art</a></li>
+              <li><a href="#/">Vases & Sculptures</a></li>
+              <li><a href="#/">Luminaires</a></li>
+              <li><a href="#/">Horloges de Luxe</a></li>
             </ul>
           </div>
           <div>
-            <h4>Aide</h4>
+            <h4>Services</h4>
             <ul>
-              <li><a href="#/">FAQ</a></li>
-              <li><a href="#/">Livraison</a></li>
-              <li><a href="#/">Retours</a></li>
+              <li><a href="#/">Conseil en Conciergerie</a></li>
+              <li><a href="#/">Livraison Privilège</a></li>
+              <li><a href="#/">Garantie Authenticité</a></li>
             </ul>
           </div>
           <div>
-            <h4>Contact</h4>
+            <h4>Contact Privé</h4>
             <ul>
-              <li>Email: hello@goldenhouse.shop</li>
-              <li>Tél: +33 1 23 45 67 89</li>
-              <li>Suivez-nous: ❤️ ✨ 📸</li>
+              <li>hello@goldenhouse.shop</li>
+              <li>+33 1 23 45 67 89</li>
+              <li>Paris • Place Vendôme</li>
             </ul>
           </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2024 Golden House. Fait avec amour et tendresse. 🌸</p>
+        <p>&copy; 2026 Golden House. Tous droits réservés. Maison de Haute Décoration.</p>
       </div>
     </footer>
   );

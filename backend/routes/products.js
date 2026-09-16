@@ -52,13 +52,26 @@ router.put('/:id', verifyToken, isAdmin, async (req, res) => {
     }
 });
 
-// Admin: Delete product
+// Admin: Delete product safely with foreign key cascade handling
 router.delete('/:id', verifyToken, isAdmin, async (req, res) => {
+    let connection;
     try {
-        await db.execute('DELETE FROM products WHERE id = ?', [req.params.id]);
-        res.json({ message: 'Product deleted' });
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        // 1. Delete dependent order_items referencing this product
+        await connection.execute('DELETE FROM order_items WHERE product_id = ?', [req.params.id]);
+
+        // 2. Delete product from products table
+        await connection.execute('DELETE FROM products WHERE id = ?', [req.params.id]);
+
+        await connection.commit();
+        res.json({ message: 'Product deleted successfully' });
     } catch (error) {
+        if (connection) await connection.rollback();
         res.status(500).json({ error: error.message });
+    } finally {
+        if (connection) connection.release();
     }
 });
 

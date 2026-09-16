@@ -30,47 +30,43 @@ export default function ContactForm({ onMessageSent }) {
 
   return (
     <section className="section contact-section">
-      <div className="section-header">
-        <h2>Contactez-nous</h2>
-        <p>Envoyez-nous un message, demandez conseil ou partagez votre idée déco. Nous répondons généralement sous 24 heures.</p>
+      <div className="section-header" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <span className="hero-badge">Conciergerie & Conseil</span>
+        <h2>Contactez la Maison</h2>
+        <p style={{ color: 'var(--text-muted)', maxWidth: '680px', margin: '0.75rem auto 0' }}>
+          Notre équipe de conseillers en décoration vous accompagne dans le choix de vos pièces d'exception.
+        </p>
       </div>
-      <div className="contact-grid">
-        <div className="contact-info-card">
-          <h3>Besoin d'aide ?</h3>
-          <p>Notre équipe douce et réactive est prête à vous aider à trouver le cadeau parfait ou à finaliser votre commande.</p>
 
-          <div className="contact-detail-row">
-            <span>📍</span>
-            <div>
-              <strong>Adresse</strong>
-              <p>20 rue de la Création, 75001 Paris</p>
-            </div>
+      <div className="admin-grid" style={{ gridTemplateColumns: '1fr 1.2fr' }}>
+        <div className="form-card" style={{ background: '#faf8f5' }}>
+          <h3 style={{ color: 'var(--royal-navy)' }}>Service Concierge</h3>
+          <p style={{ color: 'var(--text-muted)', margin: '1rem 0 1.75rem', lineHeight: '1.7' }}>
+            Pour toute demande d'informations, commande sur mesure ou rendez-vous en galerie, nous vous répondons sous 24h.
+          </p>
+
+          <div style={{ marginBottom: '1.25rem' }}>
+            <strong style={{ display: 'block', color: 'var(--royal-navy)', marginBottom: '0.2rem' }}>Adresse Galerie</strong>
+            <p style={{ margin: 0, color: 'var(--text-muted)' }}>Place Vendôme, 75001 Paris</p>
           </div>
 
-          <div className="contact-detail-row">
-            <span>📞</span>
-            <div>
-              <strong>Téléphone</strong>
-              <p>+33 1 23 45 67 89</p>
-            </div>
+          <div style={{ marginBottom: '1.25rem' }}>
+            <strong style={{ display: 'block', color: 'var(--royal-navy)', marginBottom: '0.2rem' }}>Téléphone Privé</strong>
+            <p style={{ margin: 0, color: 'var(--text-muted)' }}>+33 1 23 45 67 89</p>
           </div>
 
-          <div className="contact-detail-row">
-            <span>📧</span>
-            <div>
-              <strong>Email</strong>
-              <p>hello@goldenhouse.shop</p>
-            </div>
+          <div style={{ marginBottom: '1.75rem' }}>
+            <strong style={{ display: 'block', color: 'var(--royal-navy)', marginBottom: '0.2rem' }}>Email Conciergerie</strong>
+            <p style={{ margin: 0, color: 'var(--text-muted)' }}>hello@goldenhouse.shop</p>
           </div>
 
-          <div className="contact-pill-list">
-            <span>Support 7j/7</span>
-            <span>Réponse sous 24h</span>
-            <span>Service personnalisé</span>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <span className="category-badge" style={{ position: 'static' }}>Support 7j/7</span>
+            <span className="category-badge" style={{ position: 'static' }}>Conseil Personnalisé</span>
           </div>
         </div>
 
-        <form className="form-card contact-form-card" onSubmit={handleSubmit}>
+        <form className="form-card" onSubmit={handleSubmit}>
           <label htmlFor="contactName">Nom complet</label>
           <input
             id="contactName"
@@ -95,11 +91,11 @@ export default function ContactForm({ onMessageSent }) {
             rows="6"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Dites-nous comment nous pouvons vous aider..."
+            placeholder="Précisez votre demande ou votre projet d'aménagement..."
             required
           ></textarea>
-          <button type="submit" disabled={loading} className="primary">
-            {loading ? 'Envoi en cours...' : 'Envoyer le message'}
+          <button type="submit" disabled={loading} className="btn-primary" style={{ width: '100%', padding: '1rem' }}>
+            {loading ? 'Envoi en cours...' : 'Transmettre le Message'}
           </button>
         </form>
       </div>

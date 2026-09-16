@@ -5,6 +5,7 @@ import { apiCall } from './api';
 import Header from './components/Header';
 import ProductGrid from './components/ProductGrid';
 import Footer from './components/Footer';
+import { SparklesIcon, GalleryIcon, ContactIcon } from './components/Icons';
 const Cart = lazy(() => import('./components/Cart'));
 const AuthModal = lazy(() => import('./components/AuthModal'));
 const ContactForm = lazy(() => import('./components/ContactForm'));
@@ -25,7 +26,22 @@ function App() {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+    if (userToken) {
+      apiCall('/auth/me')
+        .then(user => {
+          if (user && user.id) {
+            setUserData(user);
+            localStorage.setItem('user', JSON.stringify(user));
+          }
+        })
+        .catch(() => {
+          setUserToken(null);
+          setUserData(null);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        });
+    }
+  }, [userToken]);
 
   const fetchProducts = async () => {
     try {
@@ -42,6 +58,7 @@ function App() {
     console.log('Current User Data:', userData);
     console.log('Is Admin:', userData?.role === 'admin');
   }, [userData]);
+
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -162,32 +179,10 @@ function App() {
       const pending = { orderId, provider: paymentMethod };
       localStorage.setItem('pendingOrder', JSON.stringify(pending));
 
-      // 2) create provider session / approval link
-      if (paymentMethod === 'card') {
-        const sess = await apiCall('/payment/stripe-session', {
-          method: 'POST',
-          body: JSON.stringify({ items, total_amount, orderId })
-        });
-        if (sess.url) {
-          window.location = sess.url;
-        } else {
-          setMessage(sess.error || 'Erreur lors de la création de la session de paiement.');
-        }
-      } else if (paymentMethod === 'paypal') {
-        const resp = await apiCall('/payment/paypal-create', {
-          method: 'POST',
-          body: JSON.stringify({ items, total_amount, orderId })
-        });
-        if (resp.approveUrl) {
-          // store paypalOrderId to capture later
-          localStorage.setItem('pendingOrder', JSON.stringify({ ...pending, paypalOrderId: resp.paypalOrderId }));
-          window.location = resp.approveUrl;
-        } else {
-          setMessage(resp.error || 'Erreur lors de la création du paiement PayPal.');
-        }
-      } else {
-        setMessage('Méthode de paiement non supportée.');
-      }
+      // Instant order confirmation for Paiement à la livraison
+      setCart([]);
+      setCartOpen(false);
+      setMessage('Votre commande a été validée avec succès ! Le règlement s\'effectuera à la livraison. 🚚');
     } catch (error) {
       const errMsg = (typeof error === 'string') ? error : (error.error || error.message || JSON.stringify(error));
       setMessage(typeof errMsg === 'object' ? JSON.stringify(errMsg) : errMsg);
@@ -254,13 +249,6 @@ function App() {
 
   return (
     <div className="app">
-      <div className="top-bar">
-        <div className="container top-bar-inner">
-          <span>📞 +33 1 23 45 67 89</span>
-          <span>✨ Livraison offerte dès 50€ d'achat ! ✨</span>
-          <span>📧 hello@goldenhouse.shop</span>
-        </div>
-      </div>
       <Suspense fallback={<div>Chargement...</div>}>
         <Header
           currentView={currentView}
@@ -287,24 +275,61 @@ function App() {
           {currentView === 'products' && (
             <>
               <section className="hero">
-                <h1>L'Art de Vivre par Golden House ✨</h1>
-                <p>Découvrez une collection exclusive d'objets de décoration pour transformer votre intérieur en un havre de paix élégant.</p>
+                <span className="hero-badge">
+                  <SparklesIcon /> Haute Décoration & Mobilier de Luxe
+                </span>
+                <h1>
+                  L'Élégance Pure par <span className="gold-text">Golden House</span>
+                </h1>
+                <p>
+                  Sublimez votre intérieur avec notre collection exclusive d'objets rares, luminaires d'exception et pièces artisanales conçues pour éveiller vos sens.
+                </p>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                  <button className="btn-primary" onClick={() => {
+                    const grid = document.querySelector('.controls-bar');
+                    if (grid) grid.scrollIntoView({ behavior: 'smooth' });
+                  }}>
+                    <GalleryIcon /> Découvrir les Collections
+                  </button>
+                  <button className="btn-secondary" onClick={() => setCurrentView('contact')}>
+                    <ContactIcon /> Prendre Rendez-vous
+                  </button>
+                </div>
+
+                <div className="hero-stats">
+                  <div className="stat-item">
+                    <strong>100%</strong>
+                    <span>Pièces Authentiques</span>
+                  </div>
+                  <div className="stat-item">
+                    <strong>500 DH+</strong>
+                    <span>Livraison Offerte</span>
+                  </div>
+                  <div className="stat-item">
+                    <strong>24/7</strong>
+                    <span>Service Concierge</span>
+                  </div>
+                </div>
+
                 <div className="hero-image-container">
-                  <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200" alt="Home decoration setup" />
+                  <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1400" alt="Luxury interior setup" />
                 </div>
               </section>
 
               <section className="home-decor-section">
-                <div className="section-header">
-                  <h2>Osez le style cute & élégant</h2>
-                  <p>Trois pièces sélectionnées pour sublimer votre intérieur avec douceur et raffinement.</p>
-                </div>
                 <div className="home-decor-card">
-                  <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=1200" alt="Home decoration" />
+                  <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1000" alt="Luxury home decor setup" />
                   <div className="home-decor-copy">
-                    <span>Collection Coup de Cœur</span>
-                    <h3>Décoration chaleureuse, charme poétique</h3>
-                    <p>Découvrez trois produits inspirés des univers décoratifs les plus doux et romantiques. Ils apportent une ambiance élégante et confortable à chaque pièce.</p>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <SparklesIcon /> Édition Privée & Artisanat
+                    </span>
+                    <h3>Harmonie du Verre & Métal Précieux</h3>
+                    <p>
+                      Chaque création Golden House est sélectionnée pour sa noblesse et sa finition irréprochable. Offrez à votre intérieur une touche de poésie et un luxe discret qui traverse le temps.
+                    </p>
+                    <button className="btn-primary" onClick={() => setCurrentView('contact')}>
+                      <ContactIcon /> Consulter un Designer
+                    </button>
                   </div>
                 </div>
               </section>

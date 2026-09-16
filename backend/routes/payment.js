@@ -24,9 +24,25 @@ function paypalClient() {
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
+// Simulated Card Payment Endpoint (Local testing & instant checkout)
+router.post('/simulate', async (req, res) => {
+    const { orderId } = req.body;
+    if (!orderId) {
+        return res.status(400).json({ error: 'Missing orderId' });
+    }
+    try {
+        await db.execute('UPDATE orders SET status = ? WHERE id = ?', ['completed', orderId]);
+        res.json({ success: true, orderId });
+    } catch (err) {
+        console.error('Simulate payment error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ==========================================
 // STRIPE ENDPOINTS
 // ==========================================
+
 
 // Create Stripe Checkout Session
 router.post('/stripe-session', async (req, res) => {

@@ -27,4 +27,15 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Delete message (Admin only)
+router.delete('/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+        await db.execute('DELETE FROM contact_messages WHERE id = ?', [req.params.id]);
+        res.json({ message: 'Message deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
+

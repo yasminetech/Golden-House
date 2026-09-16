@@ -109,8 +109,12 @@ async function seed() {
         await db.execute('INSERT IGNORE INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
             ['Admin', 'admin@goldenhouse.shop', hashedPassword, 'admin']);
 
-        // PURGE ALL OLD PRODUCTS
+        // PURGE ALL OLD PRODUCTS safely with FK check toggle
+        await db.execute('SET FOREIGN_KEY_CHECKS = 0');
+        await db.execute('DELETE FROM order_items');
+        await db.execute('DELETE FROM orders');
         await db.execute('DELETE FROM products');
+        await db.execute('SET FOREIGN_KEY_CHECKS = 1');
         
         // Seed curated Home Decor
         for (const p of products) {
@@ -119,7 +123,7 @@ async function seed() {
                 [p.name, p.description, p.price, p.image_url, p.category, p.stock]
             );
         }
-        console.log('Success! Only Home Decor items remain.');
+        console.log('Success! Home Decor items and Admin account seeded cleanly.');
         process.exit(0);
     } catch (error) {
         console.error(error);
@@ -127,3 +131,4 @@ async function seed() {
     }
 }
 seed();
+

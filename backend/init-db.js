@@ -1,20 +1,28 @@
 const mysql = require('mysql2/promise');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config();
 
 async function initDB() {
+    const host = process.env.DB_HOST || '127.0.0.1';
+    const port = Number(process.env.DB_PORT) || 3306;
+    const user = process.env.DB_USER || 'root';
+    const password = process.env.DB_PASSWORD || '';
+    const dbName = process.env.DB_NAME || 'meriams_shop';
+
     const connection = await mysql.createConnection({
-        host: process.env.DB_HOST,
-        port: Number(process.env.DB_PORT) || 3306,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
+        host,
+        port,
+        user,
+        password
     });
 
     console.log('Connected to MySQL server.');
 
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\`;`);
-    console.log(`Database "${process.env.DB_NAME}" ensured.`);
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
+    console.log(`Database "${dbName}" ensured.`);
 
-    await connection.query(`USE \`${process.env.DB_NAME}\`;`);
+    await connection.query(`USE \`${dbName}\`;`);
 
     const schema = `
     CREATE TABLE IF NOT EXISTS users (
@@ -53,8 +61,8 @@ async function initDB() {
         product_id INT,
         quantity INT NOT NULL,
         price DECIMAL(10, 2) NOT NULL,
-        FOREIGN KEY (order_id) REFERENCES orders(id),
-        FOREIGN KEY (product_id) REFERENCES products(id)
+        FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+        FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS contact_messages (

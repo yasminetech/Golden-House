@@ -46,4 +46,18 @@ router.post('/login', async (req, res) => {
     }
 });
 
+const { verifyToken } = require('../middleware/auth');
+
+// Get current user profile
+router.get('/me', verifyToken, async (req, res) => {
+    try {
+        const [users] = await db.execute('SELECT id, username, email, role, created_at FROM users WHERE id = ?', [req.userId]);
+        if (users.length === 0) return res.status(404).json({ message: 'User not found' });
+        res.json(users[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
+

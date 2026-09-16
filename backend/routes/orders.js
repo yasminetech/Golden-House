@@ -179,4 +179,41 @@ router.get('/user', verifyToken, async (req, res) => {
     }
 });
 
+// Update order status (Admin only)
+router.put('/:id/status', verifyToken, isAdmin, async (req, res) => {
+    const { status } = req.body;
+    if (!['pending', 'completed', 'cancelled'].includes(status)) {
+        return res.status(400).json({ error: 'Statut invalide. Utilisez pending, completed ou cancelled.' });
+    }
+    try {
+        await db.execute('UPDATE orders SET status = ? WHERE id = ?', [status, req.params.id]);
+        res.json({ message: 'Statut de la commande mis à jour', orderId: req.params.id, status });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete order (Admin only)
+router.delete('/:id', verifyToken, isAdmin, async (req, res) => {
+    let connection;
+    try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        // 1. Delete order_items
+        await connection.execute('DELETE FROM order_items WHERE order_id = ?', [req.params.id]);
+
+        // 2. Delete order
+        await connection.execute('DELETE FROM orders WHERE id = ?', [req.params.id]);
+
+        await connection.commit();
+        res.json({ message: 'Commande supprimée avec succès', orderId: req.params.id });
+    } catch (error) {
+        if (connection) await connection.rollback();
+        res.status(500).json({ error: error.message });
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
 module.exports = router;

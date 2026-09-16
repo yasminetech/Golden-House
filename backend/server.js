@@ -1,9 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 require('dotenv').config();
+
+
 // Diagnostic: log presence of DB env vars (do not print secrets)
 console.log('DB env:', {
     DB_HOST: !!process.env.DB_HOST,
@@ -53,7 +57,8 @@ app.get('/health', (req, res) => {
 
 // 404 Handler for API
 app.use('/api', (req, res) => {
-    res.status(404).json({ message: 'API Route not found' });
+    console.warn(`[404 API Route Not Found] ${req.method} ${req.originalUrl}`);
+    res.status(404).json({ message: `API Route not found: ${req.method} ${req.originalUrl}` });
 });
 
 app.get(/^(?!\/api).*/, (req, res) => {
